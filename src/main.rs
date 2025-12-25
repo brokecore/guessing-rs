@@ -1,5 +1,6 @@
 use std::io;
 use rand::Rng;
+use inquire::Select;
 
 pub fn greetings(){
     // rules & welcome message
@@ -7,7 +8,19 @@ pub fn greetings(){
     println!("Here are the rules:"); //TODO: insert rules later
 }
 
-pub fn gameeasy(){
+pub fn menu(){ //cli menu
+    let options = vec!["easy", "medium (doesnt work)", "hard (doesnt work)"];
+    let choices = Select::new("please pick you gamemode.", options)
+        .prompt()
+        .unwrap();
+
+    match choices {
+        "easy" => gameeasy(),
+        _ => {}
+    }
+}
+
+fn gameeasy(){
     loop {
         let mut rng = rand::rng();
         let number: u8 = rng.random_range(0..10);
@@ -27,7 +40,8 @@ pub fn gameeasy(){
         };
 
         if guess == number.into() {
-            println!("you win!")
+            println!("you win!");
+            break
         } else {
             println!("wrong")
         };
@@ -37,5 +51,5 @@ pub fn gameeasy(){
 
 fn main() {
     greetings();
-    gameeasy();
+    menu();
 }
