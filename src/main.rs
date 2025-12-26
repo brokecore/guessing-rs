@@ -2,11 +2,17 @@ use std::io;
 use rand::Rng;
 use inquire::Select;
 
+
 pub fn greetings(){
     // rules & welcome message
     println!("Hello, welcome to the guessing game");
-    println!("Here are the rules:"); //TODO: insert rules later
+    println!("Here are the rules:");
+    println!("1. You have 5 chances to guess the correct number");
+    println!("2. The difficulty either increases or decreases your chances");
+    println!("3. The number you pick is inbetween 1-100");
 }
+
+
 
 pub fn menu(){ //cli menu
     let options = vec!["easy", "medium (doesnt work)", "hard (doesnt work)"];
@@ -21,10 +27,13 @@ pub fn menu(){ //cli menu
 }
 
 fn gameeasy(){
-    loop {
+    for i in 0..10 { //stops after 10 tries
         let mut rng = rand::rng();
-        let number: u8 = rng.random_range(0..10);
-    
+        let number: u8 = rng.random_range(1..100);
+
+        println!("You have 10 chances.");
+        println!("Please insert your number here:");
+
         let mut guess = String::new();
 
         let _ = io::stdin()
@@ -43,7 +52,7 @@ fn gameeasy(){
             println!("you win!");
             break
         } else {
-            println!("wrong")
+            println!("wrong") //TODO: add different message after loop break
         };
         
     }
