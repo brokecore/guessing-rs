@@ -1,21 +1,20 @@
 use std::io;
 use rand::Rng;
 use inquire::Select;
+use colored::*;
 
-
-pub fn greetings(){
+pub fn greetings() {
     // rules & welcome message
     println!("Hello, welcome to the guessing game");
     println!("Here are the rules:");
     println!("1. You have 3(hard)-10(easy) chances to guess the correct number");
     println!("2. The difficulty either increases or decreases your chances");
-    println!("3. The number you pick is inbetween 1-100");
+    println!("3. The number you pick is in between 1-100");
 }
 
-pub fn menu(){ //cli menu
+pub fn menu() { //cli menu
     let options = vec!["easy", "medium", "hard"];
-    let choices = Select::new("please pick
-     you gamemode.", options)
+    let choices = Select::new("Please pick your game mode.", options)
         .prompt()
         .unwrap();
 
@@ -27,36 +26,46 @@ pub fn menu(){ //cli menu
     }
 }
 
-fn game(chances: u8){
-        let mut rng = rand::rng();
-        let number: u8 = rng.random_range(1..100); // the random number
+fn game(chances: u8) {
+    let mut rng = rand::thread_rng();
+    let number: u8 = rng.gen_range(1..101); // the random number
+    let mut count = 0;
 
-        println!("You have {} chances.", chances);
+    println!("You have {} chances.", chances);
 
-        for i in 0..chances {
-            println!("Please insert your number here:");
+    for _ in 0..chances {
+        println!("Please insert your number here:");
 
-            let mut guess = String::new();
+        let mut guess = String::new();
 
-            let _ = io::stdin()
-                .read_line(&mut guess)
-                .expect("Failed to read guess");
+        let _ = io::stdin()
+            .read_line(&mut guess)
+            .expect("Failed to read guess");
 
-            let guess: u8 = match guess.trim().parse() {
-                Ok(num) => num,
-              Err(_) => {
-                println!("enter a valid number (1-100.)");
+        let guess: u8 = match guess.trim().parse() {
+            Ok(num) => num,
+            Err(_) => {
+                println!("Enter a valid number (1-100).");
                 continue;
             }
         };
-        if guess == number.into() {
-            println!("you win!");
+        count += 1;
+
+        if guess == number {
+            println!("You win!");
+            println!("You took {} guesses", count);
             return; //exit game if won
         } else {
-            println!("wrong")
+            println!("{}", "Wrong!".red());
+
+            if number > guess {
+                println!("{}", format!("The number is {} than your guess", "greater".green()));
+            } else if number < guess {
+                println!("{}", format!("The number is {} than your guess", "less".red()));
+            }
         }
     }
-    println!("the corrent number was {}", number);
+    println!("The correct number was {}", number);
 }
 
 fn main() {
